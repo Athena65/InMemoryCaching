@@ -14,14 +14,36 @@ namespace InMemoryCaching.Services
             _vehicleService = vehicleService;
             _memoryCache = memoryCache;
         }
-        public Task<Vehicle> CreateVehicle(Vehicle newVehicle)
+        public async Task<Vehicle> CreateVehicle(Vehicle newVehicle)
         {
-            throw new NotImplementedException();
+            var cacheOptions = new MemoryCacheEntryOptions()
+               .SetSlidingExpiration(TimeSpan.FromSeconds(10))
+               .SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
+
+            if (_memoryCache.TryGetValue(VehicleListCacheKey, out Vehicle query))
+            {
+                return query;
+            }
+            query = await _vehicleService.CreateVehicle(newVehicle);
+            _memoryCache.Set(VehicleListCacheKey, query, cacheOptions);
+            return query;
+
         }
 
-        public Task<Vehicle> DeleteVehicle(int vehicleId)
+        public async Task<Vehicle> DeleteVehicle(int vehicleId)
         {
-            throw new NotImplementedException();
+            var cacheOptions = new MemoryCacheEntryOptions()
+               .SetSlidingExpiration(TimeSpan.FromSeconds(10))
+               .SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
+
+            if (_memoryCache.TryGetValue(VehicleListCacheKey, out Vehicle query))
+            {
+                return query;
+            }
+            query = await _vehicleService.DeleteVehicle(vehicleId);
+            _memoryCache.Set(VehicleListCacheKey, query, cacheOptions);
+            return query;
+
         }
 
         public async Task<List<Vehicle>> GetAllVehicles()
@@ -42,14 +64,36 @@ namespace InMemoryCaching.Services
 
         }
 
-        public Task<Vehicle> GetVehicleById(int vehicleId)
+        public async Task<Vehicle> GetVehicleById(int vehicleId)
         {
-            throw new NotImplementedException();
+            var cacheOptions = new MemoryCacheEntryOptions()
+               .SetSlidingExpiration(TimeSpan.FromSeconds(10))
+               .SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
+
+            if (_memoryCache.TryGetValue(VehicleListCacheKey, out Vehicle query))
+            {
+                return query;
+            }
+            query = await _vehicleService.GetVehicleById(vehicleId);
+            _memoryCache.Set(VehicleListCacheKey, query, cacheOptions);
+            return query;
+
         }
 
-        public Task<Vehicle> UpdateVehicle(int vehicleId, Vehicle updatedVehicle)
+        public async Task<Vehicle> UpdateVehicle(int vehicleId, Vehicle updatedVehicle)
         {
-            throw new NotImplementedException();
+            var cacheOptions = new MemoryCacheEntryOptions()
+               .SetSlidingExpiration(TimeSpan.FromSeconds(10))
+               .SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
+
+            if (_memoryCache.TryGetValue(VehicleListCacheKey, out Vehicle query))
+            {
+                return query;
+            }
+            query = await _vehicleService.UpdateVehicle(vehicleId,updatedVehicle);
+            _memoryCache.Set(VehicleListCacheKey, query, cacheOptions);
+            return query;
+
         }
     }
 }
